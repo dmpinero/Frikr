@@ -22,4 +22,6 @@ class Photo(models.Model):
     modified_at = models.DateTimeField(auto_now=True)    # Incluye la fecha y horas actuales al actualizar
     license = models.CharField(max_length=3, choices=LICENSES)
 
-
+    # Descripción del objeto como cadena
+    def __unicode__(self):
+        return self.name
