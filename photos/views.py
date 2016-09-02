@@ -7,9 +7,5 @@ from photos.models import Photo
 
 def home(request):
     photos = Photo.objects.all() # Devuelve todas las fotos a través del ModelManager
-    html = '<ul>'
-    for photo in photos:
-        html += '<li>' + photo.name + '</li>'
-    html += '</ul>'
 
-    return HttpResponse(html)
+    return render(request, 'photos/home.html') # Django busca en cualquier carpeta templates de todas las aplicaciones instaladas
