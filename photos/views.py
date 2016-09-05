@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django.http import HttpResponse
+from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from photos.models import Photo, PUBLIC
 
@@ -12,3 +13,23 @@ def home(request):
     }
 
     return render(request, 'photos/home.html', context) # Django busca en cualquier carpeta templates de todas las aplicaciones instaladas
+
+# Recibe el identificador de la foto en la variable pk
+def detail(request, pk):
+    """
+    Carga la página de detalle de una foto
+    :param request: HttpRequest
+    :param pk: id de la foto
+    :return: HttpResponse
+    """
+    possible_photos = Photo.objects.filter(pk=pk) # Django busca por la clave primaria, sin importar el campo que sea
+    photo = possible_photos[0] if len(possible_photos) == 1 else None
+    if photo is not None:
+        # Cargar la plantilla de detalle
+        context = {
+            'photo': photo
+        }
+
+        return render(request, 'photos/detail.html', context)
+    else:
+        return HttpResponseNotFound("No existe la foto") # 404 Not found
