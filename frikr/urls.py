@@ -14,6 +14,7 @@ urlpatterns = [
                      # método home del paquete photos.views
                      # el parámetro name permite establecer un alias para referirnos a él en las vistas
     url(r'^photos/(?P<pk>[0-9]+)$', 'photos.views.detail', name="photo_detail"), # Obtiene el id de la foto y lo pasa a un controlador
+    url(r'^photos/new$', 'photos.views.create', name="photo_create"),
 
     # Users URLs
     url(r'^login$', 'users.views.login', name="users_login"),

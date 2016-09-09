@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from photos.models import Photo, PUBLIC
+from photos.forms import PhotoForm
 
 def home(request):
     photos = Photo.objects.filter(visibility=PUBLIC).order_by('-created_at') # Devuelve todas las fotos a través del ModelManager. # Se configura la query, ordenadación descentente por fecha de creación
@@ -33,3 +34,23 @@ def detail(request, pk):
         return render(request, 'photos/detail.html', context)
     else:
         return HttpResponseNotFound("No existe la foto") # 404 Not found
+
+def create(request):
+    """
+    Muestra un formulario para crear una foto. La crea si la petición es POST
+    :param request: HttpRequest
+    :return: HttpResponse
+    """
+    form = PhotoForm()
+    if request.method == "GET":
+        form = PhotoForm()
+    else:
+        form = PhotoForm(request.POST)
+        if form.is_valid():
+            new_photo = form.save() # Guarda el objeto y lo devuelve
+            
+    context = {
+        'form': form
+    }
+
+    return render(request, 'photos/new_photo.html', context)
