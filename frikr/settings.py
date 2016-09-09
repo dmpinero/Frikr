@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'photos',
-    'frikr'
+    'frikr',
+    'users',
 ]
 
 MIDDLEWARE_CLASSES = [
