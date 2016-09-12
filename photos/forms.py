@@ -10,4 +10,4 @@ class PhotoForm(forms.ModelForm):
     """
     class Meta:
         model = Photo
-        exclude = [] # Campos que no queremos que pinte
+        exclude = ['owner'] # Campos que no queremos que pinte
