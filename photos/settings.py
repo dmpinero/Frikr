@@ -16,3 +16,5 @@ DEFAULT_LICENSES = (
 # getattr devuelve el atributo LICENSES del archivo settings.py del proyecto. Si no lo encuentra devuelve el valor de DEFAULT_LICENSES
 LICENSES = getattr(settings, 'LICENSES', DEFAULT_LICENSES)
 
+# Tacos no permitidos
+PROJECT_BADWORDS = getattr(settings, 'BADWORDS', [])
