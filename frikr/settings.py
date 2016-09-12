@@ -142,3 +142,6 @@ LOGGING = {
         }
     }
 }
+
+# LOGIN URL
+LOGIN_URL = '/login' # Cuando un usuario no está autenticado le redirige a /login
