@@ -25,7 +25,7 @@ def detail(request, pk):
     :param pk: id de la foto
     :return: HttpResponse
     """
-    possible_photos = Photo.objects.filter(pk=pk) # Django busca por la clave primaria, sin importar el campo que sea
+    possible_photos = Photo.objects.filter(pk=pk).select_related('owner') # Django busca por la clave primaria, sin importar el campo que sea
     photo = possible_photos[0] if len(possible_photos) == 1 else None
     if photo is not None:
         # Cargar la plantilla de detalle
