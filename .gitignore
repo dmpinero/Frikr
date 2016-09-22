@@ -1,3 +1,7 @@
 db.sqlite3
 *.pyc
+<<<<<<< HEAD
 /.idea
+=======
+/.idea
+>>>>>>> 4ad4ec019590148ee19bd4687e29b237582fcb70
