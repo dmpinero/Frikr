@@ -27,13 +27,24 @@ class UserListAPI(APIView):
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 class UserDetailAPI(APIView):
-    """
-    Obtiene los usuarios del sistemas
-    El serializador transforma la lista de objetos User a un diccionario de datos en formato JSON
-    """
     def get(self, request, pk):
+        """
+        Obtiene los usuarios del sistemas
+        El serializador transforma la lista de objetos User a un diccionario de datos en formato JSON
+        """
         user = get_object_or_404(User, pk=pk)  # Busca el usuario por clave primaria
         serializer = UserSerializer(user)      # Convierte el objeto en un diccionario. Lo almacena en un atributo data
 
         return Response(serializer.data)
 
+    def put(self, request, pk):
+        """
+        API de actualización de un usuario
+        """
+        user = get_object_or_404(User, pk=pk)  # Busca el usuario por clave primaria
+        serializer = UserSerializer(instance=user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
