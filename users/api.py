@@ -40,6 +40,9 @@ class UserDetailAPI(APIView):
     def put(self, request, pk):
         """
         API de actualización de un usuario
+        :param request: Petición
+        :param pk: identificador del usuario a borrar
+        :return: Respuesta de Django REST Framework
         """
         user = get_object_or_404(User, pk=pk)  # Busca el usuario por clave primaria
         serializer = UserSerializer(instance=user, data=request.data)
@@ -48,3 +51,15 @@ class UserDetailAPI(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        """
+        API de borrado de usuarios
+        :param request: Petición
+        :param pk: identificador del usuario a borrar
+        :return:
+        """
+        user = get_object_or_404(User, pk=pk)  # Busca el usuario por clave primaria
+        user.delete()                          # Borra el usuario de la base de datos
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
