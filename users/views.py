@@ -51,3 +51,4 @@ class LogoutView(View):
             django_logout(request)
 
         return redirect('photos_home')
+    

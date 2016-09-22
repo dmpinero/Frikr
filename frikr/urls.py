@@ -4,6 +4,7 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 from photos.views import HomeView, DetailView, CreateView
+from users.api import UserListAPI
 from users.views import LoginView, LogoutView
 
 urlpatterns = [
@@ -19,5 +20,8 @@ urlpatterns = [
 
     # Users URLs
     url(r'^login$', LoginView.as_view(), name="users_login"),
-    url(r'^logout$', LogoutView.as_view(), name="users_logout")
+    url(r'^logout$', LogoutView.as_view(), name="users_logout"),
+
+    # Users API URLs
+    url(r'^api/1.0/users/$', UserListAPI.as_view(), name='user_list_api')
 ]
