@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from users.serializers import UserSerializer
 from django.shortcuts import get_object_or_404
+from rest_framework.pagination import PageNumberPagination
 
 class UserListAPI(APIView):
     """
@@ -11,11 +12,13 @@ class UserListAPI(APIView):
     El serializador transforma la lista de objetos User a un diccionario de datos en formato JSON
     """
     def get(self, request):
+        paginator = PageNumberPagination()            # Instanciación del paginador
         users = User.objects.all()
+        paginator.paginate_queryset(users, request)   # Paginar el queryset
         serializer = UserSerializer(users, many=True) # Serializa todos los objetos que se le pasan (al ser más de
                                                       # uno es necesario poner many=True
         serialized_users = serializer.data            # Lista de diccionarios
-        return Response(serialized_users)
+        return paginator.get_paginated_response(serialized_users)  # Devolver respuesta paginada
 
     def post(self, request):
         serializer = UserSerializer(data=request.data) # Pasa el diccionario de datos

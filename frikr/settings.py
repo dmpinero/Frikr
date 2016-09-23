@@ -155,3 +155,9 @@ LICENSES = (
 
 # BADWORDS http://goo.gl/G2nCu7
 BADWORDS = ['Abollao', 'Abrazafarolas', 'Afilasables', 'Analfabestia', 'Apollardao']
+
+# REST FRAMEWORK PAGINATION
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',  # Clase que gestiona la paginación
+    'PAGE_SIZE': 3                                                                 # Número de elementos por página
+}
