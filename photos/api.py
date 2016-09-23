@@ -5,18 +5,36 @@ from photos.serializers import PhotoSerializer, PhotoListSerializer
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-class PhotoListAPI(ListCreateAPIView):
+from photos.views import PhotosQuerySet
+
+
+class PhotoListAPI(PhotosQuerySet, ListCreateAPIView):
     queryset = Photo.objects.all()
     permission_classes = (IsAuthenticatedOrReadOnly,)  # Si el usuario no está autenticado no puede crear fotos
 
-    """
-    Definición dinámica de serializer. Si es un listado (método get) utilza PhotoListSerializer (3 campos)
-    Si es una creación (POST) utiliza PhotoSerializer (8 campos)
-    """
     def get_serializer_class(self):
+        """
+        Definición dinámica de serializer. Si es un listado (método get) utilza PhotoListSerializer (3 campos)
+        Si es una creación (POST) utiliza PhotoSerializer (8 campos)
+        :return: PhotoSerializer si el método es POST y PhotoListSerializer en otro caso
+        """
         return PhotoSerializer if self.request.method == "POST" else PhotoListSerializer
 
-class PhotoDetailAPI(RetrieveUpdateDestroyAPIView):
+    def get_queryset(self):
+        """
+        Definición dinámica del queryset
+        :return:
+        """
+        return self.get_photos_queryset(self.request)       # Método get_photos_queryset de la clase PhotosQuerySet
+
+class PhotoDetailAPI(PhotosQuerySet, RetrieveUpdateDestroyAPIView):
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer  # Hay que indicarle la clase. No hay que instanciarla
     permission_classes = (IsAuthenticatedOrReadOnly,)  # Si el usuario no está autenticado no puede crear fotos
+
+    def get_queryset(self):
+        """
+        Definición dinámica del queryset
+        :return:
+        """
+        return self.get_photos_queryset(self.request)  # Método get_photos_queryset de la clase PhotosQuerySet

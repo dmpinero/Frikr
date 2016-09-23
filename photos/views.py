@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+from django.db.models import Q
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
@@ -9,6 +9,18 @@ from django.views.generic import View
 from django.utils.decorators import method_decorator
 from photos.models import Photo, PUBLIC
 from photos.forms import PhotoForm
+
+class PhotosQuerySet(object):
+    def get_photos_queryset(self, request):
+        if not request.user.is_authenticated:                        # Usuario no autenticado
+            photos = Photo.objects.filter(visibility=PUBLIC)            # Devolver fotos con visibilidad pública
+        elif request.user.is_superuser:                              # Usuario administrador
+            photos = Photo.objects.all()                                # Devolver todas las fotos
+        else:
+            photos = Photo.objects.filter(Q(request.user) | Q(visibility=PUBLIC))   # Devolver las fotos que pertenezcan
+                                                                                    # al propio usuario y el resto de
+                                                                                    # fotos con visiblidad pública
+        return photos
 
 class HomeView(View):
     def get(self, request):
