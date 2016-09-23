@@ -6,3 +6,11 @@ class PhotoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Photo
+
+
+class PhotoListSerializer(PhotoSerializer):
+    """
+    Serializador para listado de fotos. Muestra menos campos que en el detalle de la foto
+    """
+    class Meta(PhotoSerializer.Meta):
+        fields = ('id', 'name', 'url')
