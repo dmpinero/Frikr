@@ -3,6 +3,8 @@
 
 from django.conf.urls import include, url
 from django.contrib import admin
+
+from photos.api import PhotoListAPI
 from photos.views import HomeView, DetailView, CreateView
 from users.api import UserListAPI, UserDetailAPI
 from users.views import LoginView, LogoutView
@@ -17,6 +19,9 @@ urlpatterns = [
                      # el parámetro name permite establecer un alias para referirnos a él en las vistas
     url(r'^photos/(?P<pk>[0-9]+)$', DetailView.as_view(), name="photo_detail"), # Obtiene el id de la foto y lo pasa a un controlador
     url(r'^photos/new$', CreateView.as_view(), name="photo_create"),
+
+    # Photos API URLs
+    url(r'^api/1.0/photos/$', PhotoListAPI.as_view(), name='photo_list_api'),
 
     # Users URLs
     url(r'^login$', LoginView.as_view(), name="users_login"),
