@@ -10,7 +10,6 @@ from rest_framework.viewsets import ViewSet
 
 class UserViewSet(ViewSet):
     permission_classes = (UserPermission,)  # Aplica los permisos indicados en este módulo
-
     """
     Obtiene los usuarios del sistemas
     El serializador transforma la lista de objetos User a un diccionario de datos en formato JSON
