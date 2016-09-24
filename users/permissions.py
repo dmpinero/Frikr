@@ -11,12 +11,12 @@ class UserPermission(BasePermission):
         :param view:
         :return:
         """
-        from users.api import UserDetailAPI
-        if request.method == "POST": # Cualquiera puede crear un usuario aunque no esté autenticado
+        if view.action == "POST":       # Cualquiera puede crear un usuario aunque no esté autenticado
             return True
         elif request.user.is_superuser: # El usuario superadministrador puede hacer cualquier acción
             return True
-        elif isinstance(view, UserDetailAPI): # Hay que delegar en el método has_object_permission (excepto que sea una petición GET de un listado)
+        elif view.action in ['retrieve', 'update', 'destroy']: # Hay que delegar en el método has_object_permission
+                                                               # (excepto que sea una petición GET de un listado)
             return True # La decisión se toma en en método has_objetc_permission
         else: # GET a /api/1.0/users
             return False

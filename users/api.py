@@ -1,21 +1,21 @@
 from django.contrib.auth.models import User
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from users.serializers import UserSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from users.permissions import UserPermission
+from rest_framework.viewsets import ViewSet
 
-class UserListAPI(APIView):
 
-    permission_classes = (UserPermission,)      # Aplica los permisos indicados en este módulo
+class UserViewSet(ViewSet):
+    permission_classes = (UserPermission,)  # Aplica los permisos indicados en este módulo
 
     """
     Obtiene los usuarios del sistemas
     El serializador transforma la lista de objetos User a un diccionario de datos en formato JSON
     """
-    def get(self, request):
+    def list(self, request):
         self.check_permissions(request)
         paginator = PageNumberPagination()            # Instanciación del paginador
         users = User.objects.all()
@@ -25,7 +25,7 @@ class UserListAPI(APIView):
         serialized_users = serializer.data            # Lista de diccionarios
         return paginator.get_paginated_response(serialized_users)  # Devolver respuesta paginada
 
-    def post(self, request):
+    def create(self, request):
         self.check_permissions(request)
         serializer = UserSerializer(data=request.data) # Pasa el diccionario de datos
         if serializer.is_valid():                      # Validar el serializador
@@ -36,11 +36,7 @@ class UserListAPI(APIView):
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
-class UserDetailAPI(APIView):
-
-    permission_classes = (UserPermission,)  # Aplica los permisos indicados en este módulo
-
-    def get(self, request, pk):
+    def retrieve(self, request, pk):
         """
         Obtiene los usuarios del sistemas
         El serializador transforma la lista de objetos User a un diccionario de datos en formato JSON
@@ -52,7 +48,7 @@ class UserDetailAPI(APIView):
 
         return Response(serializer.data)
 
-    def put(self, request, pk):
+    def update(self, request, pk):
         """
         API de actualización de un usuario
         :param request: Petición
@@ -69,7 +65,7 @@ class UserDetailAPI(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
+    def destroy(self, request, pk):
         """
         API de borrado de usuarios
         :param request: Petición
