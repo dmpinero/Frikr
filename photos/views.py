@@ -5,6 +5,7 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView
 from django.views.generic import View
 from django.utils.decorators import method_decorator
 from photos.models import Photo, PUBLIC
@@ -95,3 +96,32 @@ class CreateView(View):
             'success_message': success_message
         }
         return render(request, 'photos/new_photo.html', context)
+
+class PhotoListView(View, PhotosQuerySet):
+
+    def get(self, request):
+        """
+        Devuelve:
+        - Si el usuario no está autenticado
+            - Las fotos públicas
+        - Si el usuario está autenticado
+            - Las fotos suyas y las públicas de los demás
+        - Si el usuario es superadministrador
+            - Todas las fotos
+        :param request:
+        :return:
+        """
+        context = {
+            'photos': self.get_photos_queryset(request)
+        }
+
+        return render(request, 'photos/photos_list.html', context)
+
+class UserPhotosView(ListView):
+    model=Photo
+    template_name = 'photos/user_photos.html'
+
+    def get_queryset(self):
+        queryset = super(UserPhotosView, self).get_queryset()
+
+        return queryset.filter(owner=self.request.user)

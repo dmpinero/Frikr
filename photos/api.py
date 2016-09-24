@@ -27,6 +27,15 @@ class PhotoListAPI(PhotosQuerySet, ListCreateAPIView):
         """
         return self.get_photos_queryset(self.request)       # Método get_photos_queryset de la clase PhotosQuerySet
 
+    def perform_create(self, serializer):
+        """
+        Este método se ejecuta antes de guardar la información
+        Aquí se pueden realizar cambios en el serializador
+        :param serializer:
+        :return:
+        """
+        serializer.save(owner=self.request.user)  # Modificamos el owner del objeto con el usuario autenticado
+
 class PhotoDetailAPI(PhotosQuerySet, RetrieveUpdateDestroyAPIView):
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer  # Hay que indicarle la clase. No hay que instanciarla
