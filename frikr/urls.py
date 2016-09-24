@@ -3,11 +3,16 @@
 
 from django.conf.urls import include, url
 from django.contrib import admin
+from rest_framework.routers import DefaultRouter
 
-from photos.api import PhotoListAPI, PhotoDetailAPI
+from photos.api import PhotoViewSet
 from photos.views import HomeView, DetailView, CreateView
 from users.api import UserListAPI, UserDetailAPI
 from users.views import LoginView, LogoutView
+
+# APIRouter
+router = DefaultRouter()
+router.register(r'api/1.0/photos', PhotoViewSet)
 
 urlpatterns = [
     # Administrador
@@ -21,8 +26,7 @@ urlpatterns = [
     url(r'^photos/new$', CreateView.as_view(), name="photo_create"),
 
     # Photos API URLs
-    url(r'^api/1.0/photos/$', PhotoListAPI.as_view(), name='photo_list_api'),
-    url(r'^api/1.0/photos/(?P<pk>[0-9]+)$$', PhotoDetailAPI.as_view(), name='photo_detail_api'),
+    url(r'', include(router.urls)), # Incluir las URLs de API
 
     # Users URLs
     url(r'^login$', LoginView.as_view(), name="users_login"),
