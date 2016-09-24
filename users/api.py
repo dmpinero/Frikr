@@ -5,13 +5,18 @@ from rest_framework.response import Response
 from users.serializers import UserSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
+from users.permissions import UserPermission
 
 class UserListAPI(APIView):
+
+    permission_classes = (UserPermission,)      # Aplica los permisos indicados en este módulo
+
     """
     Obtiene los usuarios del sistemas
     El serializador transforma la lista de objetos User a un diccionario de datos en formato JSON
     """
     def get(self, request):
+        self.check_permissions(request)
         paginator = PageNumberPagination()            # Instanciación del paginador
         users = User.objects.all()
         paginator.paginate_queryset(users, request)   # Paginar el queryset
@@ -21,6 +26,7 @@ class UserListAPI(APIView):
         return paginator.get_paginated_response(serialized_users)  # Devolver respuesta paginada
 
     def post(self, request):
+        self.check_permissions(request)
         serializer = UserSerializer(data=request.data) # Pasa el diccionario de datos
         if serializer.is_valid():                      # Validar el serializador
             new_user = serializer.save()
@@ -29,13 +35,19 @@ class UserListAPI(APIView):
         else:
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
+
 class UserDetailAPI(APIView):
+
+    permission_classes = (UserPermission,)  # Aplica los permisos indicados en este módulo
+
     def get(self, request, pk):
         """
         Obtiene los usuarios del sistemas
         El serializador transforma la lista de objetos User a un diccionario de datos en formato JSON
         """
+        self.check_permissions(request)
         user = get_object_or_404(User, pk=pk)  # Busca el usuario por clave primaria
+        self.check_object_permissions(request, user)
         serializer = UserSerializer(user)      # Convierte el objeto en un diccionario. Lo almacena en un atributo data
 
         return Response(serializer.data)
@@ -47,7 +59,9 @@ class UserDetailAPI(APIView):
         :param pk: identificador del usuario a borrar
         :return: Respuesta de Django REST Framework
         """
+        self.check_permissions(request)
         user = get_object_or_404(User, pk=pk)  # Busca el usuario por clave primaria
+        self.check_object_permissions(request, user)
         serializer = UserSerializer(instance=user, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -62,7 +76,9 @@ class UserDetailAPI(APIView):
         :param pk: identificador del usuario a borrar
         :return:
         """
+        self.check_permissions(request)
         user = get_object_or_404(User, pk=pk)  # Busca el usuario por clave primaria
+        self.check_object_permissions(request, user)
         user.delete()                          # Borra el usuario de la base de datos
 
         return Response(status=status.HTTP_204_NO_CONTENT)
